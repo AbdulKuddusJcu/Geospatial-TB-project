@@ -44,7 +44,7 @@ def scale(x):
   return value
 
 if __name__ == "__main__":
-    data = pd.read_csv("data_updated.csv")
+    data = pd.read_csv("data.csv")
     x_year = pd.Categorical(np.float32(data["YEAR"])).codes + 1
     T = len(set(x_year))
     N =  len(set(data["sg_uf"]))
@@ -84,4 +84,5 @@ if __name__ == "__main__":
     s = az.summary(trace_hmc)
     s.to_csv("results.csv")
     print(trace_hmc.sample_stats['diverging'].sum(axis = 1))
+
     print((trace_hmc.sample_stats['tree_depth'] == 14).sum(axis = 1))
