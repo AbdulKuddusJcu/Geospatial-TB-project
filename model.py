@@ -71,7 +71,8 @@ if __name__ == "__main__":
         pn = random_walk_model("pn", T, N, pm.math.invlogit, fhs, prison, temperature, humidity, rainfall)
         p_mort_notif = (pt.as_tensor_variable(mort_treat) + p_mort_abandon *  pt.as_tensor_variable(aban_treat))/ (y_notif -unknown)
         m_deaths = pm.Deterministic("deaths",  pop_100k_tensor * inc * ((pn * p_mort_notif) + ((1-pn) * (1-p_surv_no_notif))))
-        
+        missed_cases_per_100k = pm.Deterministic("missed_cases_per100k", inc  * (1 - pn))
+        missed_cases = pm.Deterministic("missed_cases", missed_cases_per_100k * pop_100k )
         notifications_mean = pop_100k_tensor * inc * pn
         notif = pm.Poisson("notif", mu = notifications_mean,  observed = y_notif)
         
@@ -86,3 +87,4 @@ if __name__ == "__main__":
     print(trace_hmc.sample_stats['diverging'].sum(axis = 1))
 
     print((trace_hmc.sample_stats['tree_depth'] == 14).sum(axis = 1))
+
